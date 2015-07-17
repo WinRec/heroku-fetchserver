@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -74,10 +75,16 @@ func handler(rw http.ResponseWriter, r *http.Request) {
 		resp.Header.Set("Content-Length", strconv.FormatInt(resp.ContentLength, 10))
 	}
 
-	rw.Header().Set("Content-Type", "image/gif")
-	rw.WriteHeader(http.StatusOK)
+	var w io.Writer = rw
+	switch strings.Split(resp.Header.Get("Content-Type"), "/")[0] {
+	case "image", "audio", "video":
+		rw.Header().Set("Content-Type", "image/gif")
+		w = newXorWriter(rw, []byte(Password))
+	default:
+		rw.Header().Set("Content-Type", "image/x-png")
+	}
 
-	w := newXorWriter(rw, []byte(Password))
+	rw.WriteHeader(http.StatusOK)
 
 	fmt.Fprintf(w, "HTTP/1.1 200\r\n")
 	resp.Header.Write(w)
