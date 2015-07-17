@@ -1,0 +1,9 @@
+{
+	"ImportPath": "github.com/phuslu/heroku-fetchserver",
+	"GoVersion": "go1.4.2",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+	]
+}
