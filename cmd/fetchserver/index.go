@@ -57,7 +57,7 @@ func ReadRequest(r io.Reader) (req *http.Request, err error) {
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		parts := strings.Split(line, ":")
+		parts := strings.SplitN(line, ":", 2)
 		if len(parts) != 2 {
 			err = fmt.Errorf("Invaild Request Line: %#v", line)
 			return
@@ -83,6 +83,7 @@ func ReadRequest(r io.Reader) (req *http.Request, err error) {
 
 func httpError(rw http.ResponseWriter, err string, code int) {
 	rw.Header().Set("Content-Length", strconv.Itoa(len(err)))
+	rw.Header().Set("Connection", "close")
 	http.Error(rw, err, http.StatusBadRequest)
 }
 
