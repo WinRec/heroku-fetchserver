@@ -72,6 +72,12 @@ func ReadRequest(r io.Reader) (req *http.Request, err error) {
 		return
 	}
 
+	if cl := req.Header.Get("Content-Length"); cl != "" {
+		if req.ContentLength, err = strconv.ParseInt(cl, 10, 64); err != nil {
+			return
+		}
+	}
+
 	req.Host = req.URL.Host
 	if req.Host == "" {
 		req.Host = req.Header.Get("Host")
