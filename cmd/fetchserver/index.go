@@ -71,6 +71,8 @@ func handler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// rewise resp.Header
+	resp.Header.Del("Transfer-Encoding")
 	if resp.ContentLength > 0 {
 		resp.Header.Set("Content-Length", strconv.FormatInt(resp.ContentLength, 10))
 	}
